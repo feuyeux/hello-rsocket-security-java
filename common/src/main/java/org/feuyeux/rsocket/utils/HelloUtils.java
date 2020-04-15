@@ -11,8 +11,8 @@ public class HelloUtils {
 
     public static List<String> getRandomIds(int max) {
         return IntStream.range(0, max)
-                .mapToObj(i -> getRandomId())
-                .collect(toList());
+            .mapToObj(i -> getRandomId())
+            .collect(toList());
     }
 
     public static String getRandomId() {

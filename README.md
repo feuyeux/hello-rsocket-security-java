@@ -5,7 +5,7 @@
 | access  | api  | description  | role  |
 |:----|:----|:----|:----|
 | setup  |        |                                        | ALL        |
-| route |hello-forget   | fire-and-forget (no response)          | ALL        |
+| route |hello-forget   | fire-and-forget (no response)          | AUTHENTICATED|
 | route |hello-response | request/response (stream of 1)         | USER       |
 | route |hello-stream   | request/stream (finite stream of many) | ADMIN      |
 | route |hello-channel  | channel (bi-directional streams)       | USER,ADMIN |

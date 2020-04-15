@@ -12,20 +12,18 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>${spring-security.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.10</version>
             <scope>provided</scope>
         </dependency>
 
-        <!-- https://github.com/feuyeux/buaa-lectures/tree/master/async
-        <dependency>
-            <groupId>org.feuyeux.async</groupId>
-            <artifactId>async-library</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-        -->
         <!-- https://github.com/alibaba/fastjson -->
         <dependency>
             <groupId>com.alibaba</groupId>

@@ -10,18 +10,18 @@ import org.springframework.security.config.annotation.rsocket.RSocketSecurity;
 @Configuration
 @EnableRSocketSecurity
 public class HelloSecurityConfig {
-    public static final String USER_ROLE = "USER";
-    public static final String ADMIN_ROLE = "ADMIN";
+    public static final String USER = "USER";
+    public static final String ADMIN = "ADMIN";
 
     protected RSocketSecurity pattern(RSocketSecurity security) {
         return security.authorizePayload(authorize -> authorize
-                .setup().permitAll()
-                .route("hello-forget").permitAll()
-                .route("hello-response").hasRole(USER_ROLE)
-                .route("hello-stream").hasRole(ADMIN_ROLE)
-                .route("hello-channel").hasAnyRole(USER_ROLE, ADMIN_ROLE)
-                .anyRequest().authenticated()
-                .anyExchange().permitAll()
+            .setup().permitAll()
+            .route("hello-forget").authenticated()
+            .route("hello-response").hasRole(USER)
+            .route("hello-stream").hasRole(ADMIN)
+            .route("hello-channel").hasAnyRole(USER, ADMIN)
+            .anyRequest().authenticated()
+            .anyExchange().permitAll()
         );
     }
 
@@ -29,7 +29,7 @@ public class HelloSecurityConfig {
     RSocketMessageHandler messageHandler(RSocketStrategies strategies) {
         RSocketMessageHandler mh = new RSocketMessageHandler();
         mh.getArgumentResolverConfigurer().addCustomResolver(
-                new org.springframework.security.messaging.handler.invocation.reactive.AuthenticationPrincipalArgumentResolver());
+            new org.springframework.security.messaging.handler.invocation.reactive.AuthenticationPrincipalArgumentResolver());
         mh.setRSocketStrategies(strategies);
         return mh;
     }

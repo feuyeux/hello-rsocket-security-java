@@ -9,7 +9,11 @@ import org.springframework.security.config.annotation.rsocket.RSocketSecurity;
 import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.rsocket.core.PayloadSocketAcceptorInterceptor;
+
+import static org.feuyeux.rsocket.utils.PasswordUtils.B_CRYPT_PASSWORD_ENCODER;
+import static org.feuyeux.rsocket.utils.PasswordUtils.PW_ENCODED;
 
 /**
  * https://docs.spring.io/spring-security/site/docs/5.3.1.RELEASE/reference/html5/#rsocket
@@ -22,19 +26,23 @@ public class HelloBasicSecurityConfig extends HelloSecurityConfig {
      */
     @Bean
     MapReactiveUserDetailsService authentication() {
-        UserDetails user = User.withDefaultPasswordEncoder()
-                .username("user")
-                .password("pw")
-                .roles(USER_ROLE)
-                .build();
+        String pw = PW_ENCODED;
+        UserDetails user = User.withUsername("user")
+            .password(pw)
+            .roles(USER)
+            .build();
 
-        UserDetails admin = User.withDefaultPasswordEncoder()
-                .username("admin")
-                .password("pw")
-                .roles(ADMIN_ROLE)
-                .build();
+        UserDetails admin = User.withUsername("admin")
+            .password(pw)
+            .roles(ADMIN)
+            .build();
 
         return new MapReactiveUserDetailsService(user, admin);
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return B_CRYPT_PASSWORD_ENCODER;
     }
 
     /**

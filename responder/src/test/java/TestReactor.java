@@ -1,3 +1,8 @@
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.reactivestreams.Publisher;
@@ -6,11 +11,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Slf4j
 public class TestReactor {
@@ -25,8 +25,8 @@ public class TestReactor {
         List<Integer> OddNumbers = Arrays.asList(1, 3, 5);
         List<Integer> EvenNumbers = Arrays.asList(2, 4, 6, 8);
         Flux.just(PrimeNumbers, OddNumbers, EvenNumbers)
-                .flatMap(TestReactor::apply)
-                .subscribe(i -> log.info("{}", i));
+            .flatMap(TestReactor::apply)
+            .subscribe(i -> log.info("{}", i));
     }
 
     @Test
@@ -43,8 +43,8 @@ public class TestReactor {
         // Using flatMap for transformating and flattening.
         Stream<List<Integer>> stream = listOfListofInts.stream();
         List<Integer> listofInts = stream
-                .flatMap(list -> list.stream())
-                .collect(Collectors.toList());
+            .flatMap(list -> list.stream())
+            .collect(Collectors.toList());
         log.info("The Structure after flattening is {}", listofInts);
 
         stream = listOfListofInts.stream();
@@ -54,7 +54,7 @@ public class TestReactor {
     @Test
     public void testFn() {
         Flux.range(1, 10)
-                .subscribe(i -> log.info("{}:{}", i, fn(i)));
+            .subscribe(i -> log.info("{}:{}", i, fn(i)));
     }
 
     int fn(int n) {
@@ -68,16 +68,16 @@ public class TestReactor {
     public void test2() {
         Flux<Integer> f = Flux.fromIterable(Arrays.asList(1, 2, 3, 4, 5));
         f
-                .flatMap(a -> {
-                    log.info("Received: {}", a);
-                    return Mono.just(a).subscribeOn(Schedulers.parallel());
-                })
-                .doOnNext(a -> log.info("Received: {}", a))
-                .flatMap(a -> {
-                    log.info("Received in flatMap: {}", a);
-                    return Mono.just(++a).subscribeOn(Schedulers.elastic());
-                })
-                .subscribe(a -> log.info("Received: {}", a));
+            .flatMap(a -> {
+                log.info("Received: {}", a);
+                return Mono.just(a).subscribeOn(Schedulers.parallel());
+            })
+            .doOnNext(a -> log.info("Received: {}", a))
+            .flatMap(a -> {
+                log.info("Received in flatMap: {}", a);
+                return Mono.just(++a).subscribeOn(Schedulers.elastic());
+            })
+            .subscribe(a -> log.info("Received: {}", a));
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
@@ -90,9 +90,9 @@ public class TestReactor {
         Scheduler scheduler = Schedulers.newParallel("parallel-scheduler", 4);
 
         Flux<String> source = Flux
-                .fromIterable(Arrays.asList("blue", "green", "orange", "purple"))
-                .publishOn(scheduler)
-                .map(String::toUpperCase);
+            .fromIterable(Arrays.asList("blue", "green", "orange", "purple"))
+            .publishOn(scheduler)
+            .map(String::toUpperCase);
 
         ConnectableFlux<String> co = source.publish();
 
@@ -105,14 +105,14 @@ public class TestReactor {
     @Test
     public void test0() {
         Flux<String> flux = Flux.generate(
-                () -> 1,
-                (state, sink) -> {
-                    sink.next("3 x " + state + " = " + 3 * state);
-                    if (state == 10) {
-                        sink.complete();
-                    }
-                    return state + 1;
-                });
+            () -> 1,
+            (state, sink) -> {
+                sink.next("3 x " + state + " = " + 3 * state);
+                if (state == 10) {
+                    sink.complete();
+                }
+                return state + 1;
+            });
         flux.subscribe(s -> log.info("{}", s));
     }
 }
