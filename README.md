@@ -1,13 +1,15 @@
 ## hello-rsocket-security-java
 > See more about the rsocket core hello demo: [hello-rsocket-java](https://github.com/feuyeux/hello-rsocket-java)
 
-| access  | api          | description                            | role       |
-| -------------- | -------------------------------------- | ---------- |
+
+| access  | api  | description  | role  |
+|:----|:----|:----|:----|
 | setup  |        |                                        | ALL        |
 | route |hello-forget   | fire-and-forget (no response)          | ALL        |
 | route |hello-response | request/response (stream of 1)         | USER       |
 | route |hello-stream   | request/stream (finite stream of many) | ADMIN      |
 | route |hello-channel  | channel (bi-directional streams)       | USER,ADMIN |
+
 
 ```sh
 curl http://localhost:8989/api/hello-forget
