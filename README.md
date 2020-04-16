@@ -10,7 +10,6 @@
 | route |hello-stream   | request/stream (finite stream of many) | ADMIN      |
 | route |hello-channel  | channel (bi-directional streams)       | USER,ADMIN |
 
-
 ```sh
 curl http://localhost:8989/api/hello-forget
 curl http://localhost:8989/api/hello/1
@@ -29,5 +28,13 @@ public class ResponderApplication {
 ```
 
 ### JWT
+```java
+@ComponentScan(basePackages = {"org.feuyeux.rsocket.api", "org.feuyeux.rsocket.jwt"})
+public class ResponderApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(ResponderApplication.class);
+    }
+}
+```
 
 ### SSL
