@@ -12,11 +12,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.rsocket.core.PayloadSocketAcceptorInterceptor;
 
+import static org.feuyeux.rsocket.pojo.HelloRole.ADMIN;
+import static org.feuyeux.rsocket.pojo.HelloRole.USER;
 import static org.feuyeux.rsocket.utils.PasswordUtils.B_CRYPT_PASSWORD_ENCODER;
 import static org.feuyeux.rsocket.utils.PasswordUtils.PW_ENCODED;
 
 /**
- * https://docs.spring.io/spring-security/site/docs/5.3.1.RELEASE/reference/html5/#rsocket
+ * https://docs.spring.io/spring-security/site/docs/5.3.1.RELEASE/reference/html5/#rsocket-authentication-simple
  */
 @Configuration
 @EnableRSocketSecurity
@@ -28,14 +30,14 @@ public class HelloBasicSecurityConfig extends HelloSecurityConfig {
     MapReactiveUserDetailsService authentication() {
         String pw = PW_ENCODED;
         UserDetails user = User.withUsername("user")
-            .password(pw)
-            .roles(USER)
-            .build();
+                .password(pw)
+                .roles(USER)
+                .build();
 
         UserDetails admin = User.withUsername("admin")
-            .password(pw)
-            .roles(ADMIN)
-            .build();
+                .password(pw)
+                .roles(ADMIN)
+                .build();
 
         return new MapReactiveUserDetailsService(user, admin);
     }

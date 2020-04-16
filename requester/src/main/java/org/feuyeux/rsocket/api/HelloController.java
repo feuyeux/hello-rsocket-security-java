@@ -1,7 +1,5 @@
 package org.feuyeux.rsocket.api;
 
-import java.util.List;
-
 import lombok.extern.slf4j.Slf4j;
 import org.feuyeux.rsocket.pojo.HelloRequests;
 import org.feuyeux.rsocket.pojo.HelloResponse;
@@ -14,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 /**
  * @author feuyeux@gmail.com
@@ -48,9 +48,9 @@ public class HelloController {
     @GetMapping(value = "hello-channel", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     Publisher<List<HelloResponse>> getHelloChannel() {
         Flux<HelloRequests> map = Flux.just(
-            new HelloRequests(HelloUtils.getRandomIds(3)),
-            new HelloRequests(HelloUtils.getRandomIds(3)),
-            new HelloRequests(HelloUtils.getRandomIds(3)));
+                new HelloRequests(HelloUtils.getRandomIds(3)),
+                new HelloRequests(HelloUtils.getRandomIds(3)),
+                new HelloRequests(HelloUtils.getRandomIds(3)));
         return helloRSocketAdapter.getHelloChannel(map);
     }
 }

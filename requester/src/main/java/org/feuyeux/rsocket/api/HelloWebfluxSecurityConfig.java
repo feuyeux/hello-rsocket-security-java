@@ -17,29 +17,29 @@ public class HelloWebfluxSecurityConfig {
     @Bean
     public SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http) {
         return http
-            .csrf().disable()
-            .authorizeExchange()
-            .pathMatchers(AUTH_WHITELIST).permitAll()
-            .anyExchange().authenticated()
-            .and()
-            .httpBasic()
-            .and()
-            .formLogin().disable()
-            .build();
+                .csrf().disable()
+                .authorizeExchange()
+                .pathMatchers(AUTH_WHITELIST).permitAll()
+                .anyExchange().authenticated()
+                .and()
+                .httpBasic()
+                .and()
+                .formLogin().disable()
+                .build();
     }
 
     @Bean
     public MapReactiveUserDetailsService userDetailsService() {
         UserDetails user = User.builder()
-            .username("user")
-            .password("{noop}user")
-            .roles("USER")
-            .build();
+                .username("user")
+                .password("{noop}user")
+                .roles("USER")
+                .build();
         UserDetails admin = User.builder()
-            .username("admin")
-            .password("{noop}admin")
-            .roles("ADMIN")
-            .build();
+                .username("admin")
+                .password("{noop}admin")
+                .roles("ADMIN")
+                .build();
         return new MapReactiveUserDetailsService(user, admin);
     }
 }
