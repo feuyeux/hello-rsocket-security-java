@@ -19,7 +19,7 @@ curl http://localhost:8989/api/hello-channel
 
 ### BASIC AUTH
 ```java
-@ComponentScan(basePackages = {"org.feuyeux.rsocket.api", "org.feuyeux.rsocket.basic"})
+@ComponentScan(basePackages = {"org.feuyeux.rsocket.api", "org.feuyeux.rsocket.secure.basic"})
 public class ResponderApplication {
     public static void main(String[] args) {
         SpringApplication.run(ResponderApplication.class);
@@ -29,7 +29,7 @@ public class ResponderApplication {
 
 ### JWT
 ```java
-@ComponentScan(basePackages = {"org.feuyeux.rsocket.api", "org.feuyeux.rsocket.jwt"})
+@ComponentScan(basePackages = {"org.feuyeux.rsocket.api", "org.feuyeux.rsocket.secure.jwt"})
 public class ResponderApplication {
     public static void main(String[] args) {
         SpringApplication.run(ResponderApplication.class);
@@ -38,3 +38,11 @@ public class ResponderApplication {
 ```
 
 ### SSL
+```java
+@ComponentScan(basePackages = {"org.feuyeux.rsocket.api", "org.feuyeux.rsocket.secure.tls"})
+public class ResponderApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(ResponderApplication.class);
+    }
+}
+```

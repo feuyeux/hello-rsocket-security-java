@@ -10,8 +10,9 @@ import org.springframework.context.annotation.ComponentScan;
  */
 @Slf4j
 @SpringBootApplication
-//@ComponentScan(basePackages = {"org.feuyeux.rsocket.api", "org.feuyeux.rsocket.basic"})
-@ComponentScan(basePackages = {"org.feuyeux.rsocket.api", "org.feuyeux.rsocket.jwt"})
+//@ComponentScan(basePackages = {"org.feuyeux.rsocket.api", "org.feuyeux.rsocket.secure.basic"})
+//@ComponentScan(basePackages = {"org.feuyeux.rsocket.api", "org.feuyeux.rsocket.secure.jwt"})
+@ComponentScan(basePackages = {"org.feuyeux.rsocket.api", "org.feuyeux.rsocket.secure.tls"})
 public class ResponderApplication {
     public static void main(String[] args) {
         SpringApplication.run(ResponderApplication.class);

@@ -1,8 +1,10 @@
-package org.feuyeux.rsocket.basic;
+package org.feuyeux.rsocket.secure.basic;
 
-import org.feuyeux.rsocket.HelloSecurityConfig;
+import org.feuyeux.rsocket.secure.HelloSecurityConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.rsocket.RSocketStrategies;
+import org.springframework.messaging.rsocket.annotation.support.RSocketMessageHandler;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.rsocket.EnableRSocketSecurity;
 import org.springframework.security.config.annotation.rsocket.RSocketSecurity;
@@ -54,5 +56,10 @@ public class HelloBasicSecurityConfig extends HelloSecurityConfig {
     PayloadSocketAcceptorInterceptor authorization(RSocketSecurity rsocketSecurity) {
         RSocketSecurity security = pattern(rsocketSecurity).simpleAuthentication(Customizer.withDefaults());
         return security.build();
+    }
+
+    @Bean
+    RSocketMessageHandler messageHandler(RSocketStrategies strategies) {
+        return getMessageHandler(strategies);
     }
 }

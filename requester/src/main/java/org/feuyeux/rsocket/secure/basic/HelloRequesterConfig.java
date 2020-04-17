@@ -1,4 +1,4 @@
-package org.feuyeux.rsocket.basic;
+package org.feuyeux.rsocket.secure.basic;
 
 import io.rsocket.metadata.WellKnownMimeType;
 import org.springframework.context.annotation.Bean;

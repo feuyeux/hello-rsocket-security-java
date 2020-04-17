@@ -1,17 +1,12 @@
-package org.feuyeux.rsocket;
+package org.feuyeux.rsocket.secure;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.rsocket.RSocketStrategies;
 import org.springframework.messaging.rsocket.annotation.support.RSocketMessageHandler;
-import org.springframework.security.config.annotation.rsocket.EnableRSocketSecurity;
 import org.springframework.security.config.annotation.rsocket.RSocketSecurity;
 
 import static org.feuyeux.rsocket.pojo.HelloRole.ADMIN;
 import static org.feuyeux.rsocket.pojo.HelloRole.USER;
 
-@Configuration
-@EnableRSocketSecurity
 public class HelloSecurityConfig {
     protected RSocketSecurity pattern(RSocketSecurity security) {
         return security.authorizePayload(authorize -> authorize
@@ -25,8 +20,7 @@ public class HelloSecurityConfig {
         );
     }
 
-    @Bean
-    RSocketMessageHandler messageHandler(RSocketStrategies strategies) {
+    protected RSocketMessageHandler getMessageHandler(RSocketStrategies strategies) {
         RSocketMessageHandler mh = new RSocketMessageHandler();
         mh.getArgumentResolverConfigurer().addCustomResolver(
                 new org.springframework.security.messaging.handler.invocation.reactive.AuthenticationPrincipalArgumentResolver());
