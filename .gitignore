@@ -44,3 +44,10 @@ target/
 */.settings/
 /.settings/
 /.classpath
+*.crt
+*.csr
+*.key
+*.pem
+*.jks
+*.srl
+*.p12
