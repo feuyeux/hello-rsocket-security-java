@@ -1,6 +1,7 @@
 package org.feuyeux.rsocket.ultimate;
 
 import com.alibaba.fastjson.JSON;
+import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.SslProvider;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
@@ -16,32 +17,26 @@ import org.feuyeux.rsocket.pojo.HelloRequest;
 import org.feuyeux.rsocket.pojo.HelloRequests;
 import org.feuyeux.rsocket.pojo.HelloResponse;
 import org.feuyeux.rsocket.utils.HelloUtils;
-import reactor.core.Exceptions;
 import reactor.core.publisher.Flux;
 import reactor.netty.tcp.TcpClient;
 
-import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLException;
 import javax.net.ssl.TrustManagerFactory;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.cert.CertificateException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
+import static org.feuyeux.rsocket.ultimate.RSocketServer.*;
+
 @Slf4j
 public class RSocketClient {
-    public static final String HOST = "localhost";
-    public static final int PORT = 7878;
+
     private static final Random random = new Random();
 
-    public static void main(String[] args) throws InterruptedException {
+    private static TrustManagerFactory trustManagerFactory = InsecureTrustManagerFactory.INSTANCE;
+
+    public static void main(String[] args) throws InterruptedException, SSLException {
         RSocket socket = init();
         if (socket != null) {
             execMetaPush(socket);
@@ -52,30 +47,30 @@ public class RSocketClient {
         }
     }
 
-    private static RSocket init() {
-        System.setProperty("javax.net.ssl.keyStore", "/Users/han/cooding/feuyeux/hello-rsocket-security-java/doc/hello-client-keystore.jks");
-        System.setProperty("javax.net.ssl.keyStorePassword", "secret");
-        System.setProperty("javax.net.ssl.trustStore", "/Users/han/cooding/feuyeux/hello-rsocket-security-java/doc/hello-client-truststore.jks");
-        System.setProperty("javax.net.ssl.trustStorePassword", "secret");
-
+    private static RSocket init() throws SSLException {
+//        System.setProperty("javax.net.ssl.keyStore", "/Users/han/cooding/feuyeux/hello-rsocket-security-java/doc/hello-client-keystore.jks");
+//        System.setProperty("javax.net.ssl.keyStorePassword", "secret");
+//        System.setProperty("javax.net.ssl.trustStore", "/Users/han/cooding/feuyeux/hello-rsocket-security-java/doc/hello-client-truststore.jks");
+//        System.setProperty("javax.net.ssl.trustStorePassword", "secret");
         TcpClientTransport tcpTransport = TcpClientTransport.create(HOST, PORT);
         WebsocketClientTransport wsTransport = WebsocketClientTransport.create(HOST, PORT);
-        TcpClientTransport tlsClientTransport = TcpClientTransport.create(TcpClient.create().port(PORT).secure(spec -> {
-            final SslProvider sslProvider = SslProvider.JDK;
-            try {
-                spec.sslContext(
-                        SslContextBuilder.forClient()
-                                .trustManager(InsecureTrustManagerFactory.INSTANCE)
-                                .sslProvider(sslProvider)
-                                .build());
-            } catch (Exception sslException) {
-                throw Exceptions.propagate(sslException);
-            }
-        }));
+
+        SslContext context = SslContextBuilder
+                .forClient()
+                .protocols(protocols)
+                .sslProvider(SslProvider.JDK)
+                .trustManager(trustManagerFactory).build();
+
+        TcpClientTransport tlsClientTransport = TcpClientTransport.create(TcpClient.create().port(PORT).secure(spec -> spec.sslContext(context)));
+
         return RSocketFactory.connect()
                 .errorConsumer(throwable -> {
                     if (throwable instanceof RejectedResumeException) {
-                        init();
+                        try {
+                            init();
+                        } catch (Exception e) {
+                            log.error("", e);
+                        }
                     }
                 })
                 .resume()

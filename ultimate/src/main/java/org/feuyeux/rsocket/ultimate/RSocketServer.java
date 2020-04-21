@@ -3,6 +3,7 @@ package org.feuyeux.rsocket.ultimate;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.SslProvider;
+import io.netty.handler.ssl.util.SelfSignedCertificate;
 import io.rsocket.ConnectionSetupPayload;
 import io.rsocket.RSocket;
 import io.rsocket.RSocketFactory;
@@ -15,33 +16,40 @@ import reactor.netty.tcp.TcpServer;
 
 import javax.net.ssl.SSLException;
 import java.io.File;
+import java.security.PrivateKey;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.time.Duration;
 
 @Slf4j
 public class RSocketServer {
     public static final String HOST = "localhost";
     public static final int PORT = 7878;
+    public static final String[] protocols = new String[]{"TLSv1.2"};
 
-    public static void main(String[] args) throws InterruptedException, SSLException {
+    public static void main(String[] args) throws InterruptedException, SSLException, CertificateException {
         TcpServerTransport tcpTransport = TcpServerTransport.create(HOST, PORT);
         WebsocketServerTransport wsTransport = WebsocketServerTransport.create(HOST, PORT);
 
-        File sslCertificate = new File("/Users/han/cooding/feuyeux/hello-rsocket-security-java/doc/hello-server-crt.pem");
-        File sslPrivateKey = new File("/Users/han/cooding/feuyeux/hello-rsocket-security-java/doc/hello-server-key.pem");
+        File certFile = new File("/Users/han/shop/cert.pem");
+        File keyFile = new File("/Users/han/shop/key.pem");
+        SelfSignedCertificate selfSignedCertificate = new SelfSignedCertificate();
+        PrivateKey privateKey = selfSignedCertificate.key();
+        X509Certificate certificate = selfSignedCertificate.cert();
 
-        final SslContext sslContext =
-                SslContextBuilder.forServer(
-                        sslCertificate,
-                        sslPrivateKey,
-                        "secret")
-                        .sslProvider(SslProvider.JDK)
-                        .build();
+        final SslContext sslContext = SslContextBuilder
+                //.forServer(certFile, keyFile)
+                .forServer(privateKey, certificate)
+                .protocols(protocols).sslProvider(SslProvider.JDK).build();
         TcpServer tcpServer = TcpServer.create().host(HOST).port(PORT).secure(spec -> {
             spec.sslContext(sslContext);
         });
         TcpServerTransport tlsTransport = TcpServerTransport.create(tcpServer);
 
         RSocketFactory.receive()
+                .errorConsumer(throwable -> {
+                    log.error("", throwable);
+                })
                 .resume()
                 .resumeSessionDuration(Duration.ofSeconds(60))
                 .acceptor(new HelloSocketAcceptor())
