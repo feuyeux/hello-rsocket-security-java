@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.feuyeux.rsocket-security</groupId>
+c
     <artifactId>hello-rsocket-java</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -13,6 +13,7 @@
         <module>common</module>
         <module>responder</module>
         <module>requester</module>
+        <module>ultimate</module>
     </modules>
     <properties>
         <spring-boot.version>2.3.0.M4</spring-boot.version>

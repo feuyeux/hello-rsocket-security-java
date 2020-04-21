@@ -24,17 +24,19 @@ generateUserCertificate() {
   -CAkey hello-ca.key \
   -CAcreateserial \
   -out ${user_ct}.crt
-  openssl x509 -in ${user_ct}.crt -out ${user_ct}.pem
+
+  openssl rsa -in ${user_ct}.key -text > ${user_ct}-key.pem
+  openssl x509 -in ${user_ct}.crt -out ${user_ct}-crt.pem
 }
 generateKeyStore() {
   echo "[${user_ct}] 1 Convert crt to pem:"
-  openssl x509 -in hello-ca.crt -out hello-ca.pem
+  openssl x509 -in hello-ca.crt -out hello-ca-crt.pem
   echo "[${user_ct}] 2 Generate pkcs12:"
   openssl pkcs12 -export -in ${user_ct}.crt \
   -inkey ${user_ct}.key \
   -out ${user_ct}.p12 \
   -name ${user_ct} \
-  -CAfile hello-ca.pem \
+  -CAfile hello-ca-crt.pem \
   -caname hello-root \
   -passout pass:secret
   echo "[${user_ct}] 3 Generate keystore:"
@@ -47,7 +49,7 @@ generateKeyStore() {
   echo "[${user_ct}] 4 Generate truststore:"
   keytool -keystore ${user_ct}-truststore.jks \
   -importcert \
-  -file hello-ca.pem \
+  -file hello-ca-crt.pem \
   -alias hello-ca \
   -storepass secret \
   -noprompt
