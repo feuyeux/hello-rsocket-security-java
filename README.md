@@ -1,7 +1,6 @@
 ## hello-rsocket-security-java
 > See more about the rsocket core hello demo: [hello-rsocket-java](https://github.com/feuyeux/hello-rsocket-java)
 
-
 | access  | api  | description  | role  |
 |:----|:----|:----|:----|
 | setup  |        |                                        | ALL        |
@@ -38,6 +37,10 @@ public class ResponderApplication {
 ```
 
 ### SSL
+```sh
+bash doc/hello-openssl.sh
+```
+
 ```java
 @ComponentScan(basePackages = {"org.feuyeux.rsocket.api", "org.feuyeux.rsocket.secure.tls"})
 public class ResponderApplication {

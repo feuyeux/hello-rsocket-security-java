@@ -1,25 +1,29 @@
 #!/bin/bash
-generateRootCa(){
+generateRootCa() {
   echo "1 Generate CA private key:"
   openssl genrsa -out hello-ca.key 2048 
   echo "2 Generate CSR(certificate signing request):"
-  openssl req -new -key hello-ca.key -out hello-ca.csr \
-  -subj "/C=CN/ST=Beijing/L=Beijing/O=feuyeux/OU=dev" \
-  -reqexts SAN \
-  -config <(cat /etc/ssl/openssl.cnf <(printf "[SAN]\nsubjectAltName='DNS:localhost,IP:127.0.0.1'"))
+  openssl req -new -key hello-ca.key -out hello-ca.csr -subj "/C=CN/ST=BJ/L=BJ/O=feuyeux/OU=dev"
   echo "3 Generate Self Signed certificate"
-  openssl x509 -req -days 365 -in hello-ca.csr -signkey hello-ca.key -out hello-ca.crt 
+  openssl x509 -req -days 365 -in hello-ca.csr -signkey hello-ca.key -out hello-ca.crt
 }
 generateUserCertificate() {
   echo "[${user_ct}] 1 Generate server private key:"
   openssl genrsa -out ${user_ct}.key 2048
   echo "[${user_ct}] 2 Generate CSR(certificate signing request):"
-  openssl req -new -key ${user_ct}.key -out ${user_ct}.csr \
-  -subj "/C=CN/ST=Beijing/L=Beijing/O=feuyeux/OU=dev" \
-  -reqexts SAN \
-  -config <(cat /etc/ssl/openssl.cnf <(printf "[SAN]\nsubjectAltName='DNS:localhost,IP:127.0.0.1'"))
+  openssl req -new -key ${user_ct}.key -out ${user_ct}.csr -subj "/C=CN/ST=BJ/L=BJ/O=feuyeux/OU=dev"
+  #-addext "subjectAltName = DNS:localhost,IP:127.0.0.1"
+  #-reqexts SAN \
+  #-config <(cat /etc/ssl/openssl.cnf <(printf "[SAN]\nsubjectAltName='DNS:localhost,IP:127.0.0.1'"))
   echo "[${user_ct}] 3 Generate a certificate signing request based on an existing certificate:"
-  openssl x509 -req -days 365 -in ${user_ct}.csr -CA hello-ca.crt -CAkey hello-ca.key -CAcreateserial -out ${user_ct}.crt
+  openssl x509 -req \
+  -extfile <(printf "subjectAltName=DNS:localhost,IP:127.0.0.1") \
+  -days 365 \
+  -in ${user_ct}.csr \
+  -CA hello-ca.crt \
+  -CAkey hello-ca.key \
+  -CAcreateserial \
+  -out ${user_ct}.crt
   openssl x509 -in ${user_ct}.crt -out ${user_ct}.pem
 }
 generateKeyStore() {
@@ -48,7 +52,7 @@ generateKeyStore() {
   -storepass secret \
   -noprompt
 }
-verify(){
+verify() {
   echo "1 private key:"
   openssl rsa -check -in hello-ca.key
   openssl rsa -check -in hello-server.key
@@ -67,6 +71,12 @@ verify(){
   echo "4 p12:"
   openssl pkcs12 -info -noout -in hello-server.p12 -passin pass:secret
   openssl pkcs12 -info -noout -in hello-client.p12 -passin pass:secret
+  echo
+  echo "5 jks:"
+  keytool -list -v -keystore hello-server-keystore.jks -storepass secret
+  keytool -list -v -keystore hello-server-truststore.jks -storepass secret
+  keytool -list -v -keystore hello-client-truststore.jks -storepass secret
+  keytool -list -v -keystore hello-client-keystore.jks -storepass secret
 }
 clean() {
   rm -rf hello-ca*
