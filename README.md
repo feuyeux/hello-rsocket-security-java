@@ -37,6 +37,8 @@ public class ResponderApplication {
 ```
 
 ### SSL
+> Not ready
+
 ```sh
 bash doc/hello-openssl.sh
 ```

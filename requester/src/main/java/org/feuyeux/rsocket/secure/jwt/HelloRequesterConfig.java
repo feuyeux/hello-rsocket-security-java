@@ -1,6 +1,7 @@
 package org.feuyeux.rsocket.secure.jwt;
 
 import io.rsocket.metadata.WellKnownMimeType;
+import org.feuyeux.rsocket.pojo.HelloUser;
 import org.feuyeux.rsocket.utils.TokenUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,9 +19,6 @@ import static org.feuyeux.rsocket.pojo.HelloRole.USER;
  */
 @Configuration
 public class HelloRequesterConfig {
-    private final String userToken = TokenUtils.generate("user", USER);
-    private final String adminToken = TokenUtils.generate("admin", ADMIN);
-
     //message/x.rsocket.authentication.v0
     private final MimeType mimeType2 = MimeTypeUtils.parseMimeType(WellKnownMimeType.MESSAGE_RSOCKET_AUTHENTICATION.getString());
     //message/x.rsocket.authentication.bearer.v0
@@ -28,6 +26,12 @@ public class HelloRequesterConfig {
 
     @Bean
     RSocketRequester rSocketRequester(RSocketRequester.Builder builder) {
+        HelloUser user = HelloUser.builder().userId("user").password("868").role(USER).build();
+        HelloUser admin = HelloUser.builder().userId("admin").password("868").role(ADMIN).build();
+
+        String userToken = TokenUtils.generateAccessToken(user).getToken();
+        String adminToken = TokenUtils.generateAccessToken(admin).getToken();
+
         return builder
                 .setupMetadata(userToken, this.mimeType)
                 //.setupMetadata(userToken, this.mimeType)

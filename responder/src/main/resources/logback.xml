@@ -9,4 +9,13 @@
     <root level="DEBUG">
         <appender-ref ref="STDOUT"/>
     </root>
+    <logger name="org.springframework.beans" additivity="false" level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="org.springframework.boot.autoconfigure" additivity="false" level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="io.netty.util" additivity="false" level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </logger>
 </configuration>

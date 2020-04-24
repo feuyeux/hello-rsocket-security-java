@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 echo "hello-forget"
 curl http://localhost:8989/api/hello-forget
 echo

@@ -39,7 +39,7 @@ public class HelloJwtSecurityConfig extends HelloSecurityConfig {
 
     @Bean
     public ReactiveJwtDecoder jwtDecoder() throws Exception {
-        return TokenUtils.jwtDecoder();
+        return TokenUtils.jwtAccessTokenDecoder();
     }
 
     @Bean
